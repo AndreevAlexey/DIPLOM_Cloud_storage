@@ -1,5 +1,7 @@
 package cloud_storage.service;
 
+import cloud_storage.constant.Constant;
+import cloud_storage.exceptions.ErrorInputData;
 import cloud_storage.repository.CloudRepository;
 import cloud_storage.model.userfile.FileInfo;
 import org.springframework.core.io.Resource;
@@ -18,38 +20,39 @@ public class CloudService {
 
     /** сохранить файл **/
     public void uploadFile(String filename, MultipartFile file) {
+        if (filename == null || filename.isEmpty()) throw new ErrorInputData(Constant.EMPTY_FILE_NAME);
         cloudRepository.uploadFile(filename, file);
     }
 
     /** изменить имя файла **/
     public void editFileName(String filename, String name) {
+        if (filename == null || filename.isEmpty() || name == null || name.isEmpty()) throw new ErrorInputData(Constant.EMPTY_FILE_NAME);
+        if (filename.equals(name)) throw new ErrorInputData(Constant.EQL_FILE_NAMES);
         cloudRepository.editFileName(filename, name);
     }
 
     /** удалить файл **/
     public void deleteFile(String filename) {
+        if (filename == null || filename.isEmpty()) throw new ErrorInputData(Constant.EMPTY_FILE_NAME);
         cloudRepository.deleteFile(filename);
     }
 
     /** скачать файл **/
     public Resource downloadFile(String filename) {
+        if (filename == null || filename.isEmpty()) throw new ErrorInputData(Constant.EMPTY_FILE_NAME);
         return cloudRepository.downloadFile(filename);
     }
 
     /** получить список файлов **/
     public List<FileInfo> getUserFileList(int limit) {
+        if (limit <= 0) throw new ErrorInputData(Constant.WRN_LIST_LIM);
         return cloudRepository.getUserFileList(limit);
     }
 
     /** login **/
     public String login(String login, String password) {
+        if (login == null || login.isEmpty() || password == null || password.isEmpty()) throw new ErrorInputData(Constant.EMPTY_LOG_PASS);
         return cloudRepository.login(login, password);
     }
-
-    // добавить в лог
-    public void log(String msg) {
-        cloudRepository.log(msg);
-    }
-
 
 }

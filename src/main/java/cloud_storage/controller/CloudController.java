@@ -10,34 +10,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 
-@CrossOrigin(origins = "http://localhost:8080/", allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = {"${settings.cors_origin}"}, allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class CloudController {
     private final CloudService cloudService;
-    // TODO общая аннотация для endpoint
     public CloudController(CloudService cloudService) {
         this.cloudService = cloudService;
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody Map<String, String> auth) {
+    public Map<String, String> loginUser(@RequestBody Map<String, String> auth) {
         String token = cloudService.login(auth.get("login"), auth.get("password"));
-        return "{\"auth-token\":\"" + token + "\"}";
+        return Collections.singletonMap("auth-token", token);
     }
 
     @PostMapping("/logout")
-    public String logoutUser(@RequestParam("auth-token") String authToken) {
-        return "Success logout";
+    public String logoutUser() {
+        return Constant.SUCCESS_LOGOUT;
     }
 
     // фронт отправляет http://localhost:9999/login?logout вместо post?как указано в спецификации
     @GetMapping("/login")
     public String logout() {
-        return "Success logout";
+        return Constant.SUCCESS_LOGOUT;
     }
 
     /** POST сохранить файл **/
@@ -76,18 +76,14 @@ public class CloudController {
 
     @ExceptionHandler(ErrorInputData.class)
     ResponseEntity<String> handlerErrorInputData(ErrorInputData exp) {
-        cloudService.log(exp.getMessage());
         return new ResponseEntity<>(makeErrorJson(exp.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     ResponseEntity<String> handlerRuntimeException(RuntimeException exp) {
-        cloudService.log(exp.getMessage());
         exp.printStackTrace();
         return new ResponseEntity<>(makeErrorJson(Constant.SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private String makeErrorJson(String msg) {
-        return "{\"message\":\"" + msg + "\",\"id\":\"0\"}";
-    }
+    private String makeErrorJson(String msg) { return "{\"message\":\"" + msg + "\",\"id\":\"0\"}";}
 }
