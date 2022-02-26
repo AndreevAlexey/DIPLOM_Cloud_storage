@@ -24,7 +24,7 @@
 
 http://localhost:9999/login 
 
-POST
+`POST`
 
 `Content-Type: application/json`
 
@@ -46,7 +46,7 @@ POST
 
 http://localhost:9999/file?filename=example.txt
 
-POST
+`POST`
 
 `Content-Type: multipart/form-data`
 
@@ -60,7 +60,7 @@ POST
 
 http://localhost:9999/file?filename=example.txt
 
-PUT
+`PUT`
 
 `Content-Type: application/json`
 
@@ -80,7 +80,7 @@ PUT
 
 http://localhost:9999/file?filename=example.txt
 
-GET
+`GET`
 
 #### *Результаты обработки:*
 
@@ -94,7 +94,7 @@ GET
 
 http://localhost:9999/file?filename=example.txt
 
-DELETE
+`DELETE`
 
 #### *Результаты обработки:*
 
@@ -108,7 +108,7 @@ DELETE
 
 http://localhost:9999/list?limit=5
 
-GET
+`GET`
 
 #### *Результаты обработки:*
 
@@ -143,4 +143,5 @@ GET
 
 ### Запуск
 
-Для запуска приложения в терминале выполнить команду `docker-compose up`
+Для запуска приложения в терминале выполнить команду `docker-compose up` :
+будет запщен контейнер БД и контейнер приложения
