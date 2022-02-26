@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-// TODO возможно сделать отдельную таблицу user-file?
 @Data
 @Builder
 @AllArgsConstructor
