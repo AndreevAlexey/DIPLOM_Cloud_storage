@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -19,25 +18,9 @@ import java.util.Map;
 @RestController
 public class CloudController {
     private final CloudService cloudService;
+
     public CloudController(CloudService cloudService) {
         this.cloudService = cloudService;
-    }
-
-    @PostMapping("/login")
-    public Map<String, String> loginUser(@RequestBody Map<String, String> auth) {
-        String token = cloudService.login(auth.get("login"), auth.get("password"));
-        return Collections.singletonMap("auth-token", token);
-    }
-
-    @PostMapping("/logout")
-    public String logoutUser() {
-        return Constant.SUCCESS_LOGOUT;
-    }
-
-    // фронт отправляет http://localhost:9999/login?logout вместо post?как указано в спецификации
-    @GetMapping("/login")
-    public String logout() {
-        return Constant.SUCCESS_LOGOUT;
     }
 
     /** POST сохранить файл **/
@@ -76,14 +59,13 @@ public class CloudController {
 
     @ExceptionHandler(ErrorInputData.class)
     ResponseEntity<String> handlerErrorInputData(ErrorInputData exp) {
-        return new ResponseEntity<>(makeErrorJson(exp.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(cloudService.makeErrorJson(exp.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     ResponseEntity<String> handlerRuntimeException(RuntimeException exp) {
         exp.printStackTrace();
-        return new ResponseEntity<>(makeErrorJson(Constant.SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(cloudService.makeErrorJson(Constant.SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private String makeErrorJson(String msg) { return "{\"message\":\"" + msg + "\",\"id\":\"0\"}";}
 }

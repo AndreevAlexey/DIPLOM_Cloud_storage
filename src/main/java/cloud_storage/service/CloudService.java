@@ -49,10 +49,6 @@ public class CloudService {
         return cloudRepository.getUserFileList(limit);
     }
 
-    /** login **/
-    public String login(String login, String password) {
-        if (login == null || login.isEmpty() || password == null || password.isEmpty()) throw new ErrorInputData(Constant.EMPTY_LOG_PASS);
-        return cloudRepository.login(login, password);
-    }
+    public String makeErrorJson(String msg) { return cloudRepository.makeErrorJson(msg);}
 
 }

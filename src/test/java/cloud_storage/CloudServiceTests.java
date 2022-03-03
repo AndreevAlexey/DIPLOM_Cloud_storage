@@ -73,13 +73,4 @@ public class CloudServiceTests {
         Assertions.assertThrows(ErrorInputData.class, () -> cloudService.getUserFileList(limit));
     }
 
-    @Test
-    public void test_login_empty_password_thrown_EMPTY_FILE_NAME() {
-        // given
-        String login = "user";
-        String password = "";
-        // then
-        Assertions.assertThrows(ErrorInputData.class, () -> cloudService.login(login, password));
-    }
-
 }

@@ -8,7 +8,6 @@ import cloud_storage.model.user.User;
 import cloud_storage.model.userfile.FileInfo;
 import cloud_storage.model.userfile.UserFile;
 import cloud_storage.security.JwtProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -23,25 +22,30 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Transactional
 @Repository
 public class CloudRepository {
 
-    @Autowired
-    private UserFileCrudRepository userFileCrudRepository;
+    private final UserFileCrudRepository userFileCrudRepository;
+    private final UserCrudRepository userCrudRepository;
+    private final HistoryCrudRepository historyCrudRepository;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserCrudRepository userCrudRepository;
-
-    @Autowired
-    private HistoryCrudRepository historyCrudRepository;
-
-    @Autowired
-    private JwtProvider jwtProvider;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public CloudRepository(UserFileCrudRepository userFileCrudRepository,
+                           UserCrudRepository userCrudRepository,
+                           HistoryCrudRepository historyCrudRepository,
+                           JwtProvider jwtProvider,
+                           PasswordEncoder passwordEncoder)
+    {
+        this.userFileCrudRepository = userFileCrudRepository;
+        this.userCrudRepository = userCrudRepository;
+        this.historyCrudRepository = historyCrudRepository;
+        this.jwtProvider = jwtProvider;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // добавить запись в историю запросов
     public void addHistory(User user, String desc) {
@@ -51,8 +55,9 @@ public class CloudRepository {
                 .uploadDate(LocalDate.now())
                 .build();
         historyCrudRepository.save(history);
-
     }
+
+    public String makeErrorJson(String msg) { return "{\"message\":\"" + msg + "\",\"id\":\"0\"}";}
 
     // имя пользователя из контекста
     public String getUserName() {

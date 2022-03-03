@@ -2,7 +2,6 @@ package cloud_storage;
 
 import cloud_storage.repository.UserCrudRepository;
 import cloud_storage.model.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -15,11 +14,13 @@ import java.util.stream.Stream;
 @Component
 public class CommandLineApp implements CommandLineRunner {
 
-    @Autowired
-    private UserCrudRepository userCrudRepository;
+    private final UserCrudRepository userCrudRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public CommandLineApp(UserCrudRepository userCrudRepository, PasswordEncoder passwordEncoder) {
+        this.userCrudRepository = userCrudRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     @Transactional
